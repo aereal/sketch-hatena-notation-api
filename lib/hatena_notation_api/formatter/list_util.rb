@@ -5,20 +5,21 @@ end
 
 module HatenaNotationApi::Formatter::ListUtil
   def self.grouping(list)
-    results = []
     accum = []
     initial = [ { level: 0 } ] + list.reverse
-    initial.each_cons(2) do |prev, current|
+    initial.each_cons(2).reduce([]) do |results, (prev, current)|
       if current[:level] == 1
-        results.unshift({ text: current[:text], children: accum })
+        n = { text: current[:text], children: accum.clone }
         accum = []
+        [n] + results
       elsif current[:level] > prev[:level]
         accum.unshift({ text: current[:text], children: [] })
+        results
       else # parent
         current = { text: current[:text], children: accum.clone }
         accum = [current]
+        results
       end
     end
-    results
   end
 end
