@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     awesome_print (1.7.0)
+    escape_utils (1.2.1)
     minitest (5.10.1)
 
 PLATFORMS
@@ -9,6 +10,7 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print
+  escape_utils
   minitest (>= 5.10.1)
 
 RUBY VERSION
