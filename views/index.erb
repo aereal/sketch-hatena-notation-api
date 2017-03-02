@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>はてな記法エディタ</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/milligram/1.1.0/milligram.css">
+    <style type="text/css">
+      html, body {
+        height: 100%;
+      }
+      main {
+        width: 100%;
+        height: 100%;
+        display: flex;
+      }
+      main > * {
+        flex: 1 1 50%;
+        padding: 0 40px;
+      }
+      #editor-section {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      #editor-section > h1 {
+        min-height: 5%;
+      } 
+      #editor-section > form {
+        flex: 1 1 auto;
+        height: 80%;
+      }
+      textarea {
+        height: 100%;
+      }
+      #preview-frame {
+        width: 100%;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div id="editor-section">
+        <h1>はてな記法エディタ</h1>
+        <form id="editor" data-action="/render" method="POST">
+          <textarea name="body"></textarea>
+        </form>
+      </div>
+      <div id="preview">
+        <h1>Preview</h1>
+        <iframe id="preview-frame" sandbox></iframe>
+      </div>
+    </main>
+    <script>
+      const previewFrame = document.getElementById('preview-frame');
+      const editorForm = document.getElementById('editor');
+      editorForm.addEventListener('change', function (ev) {
+        ev.preventDefault();
+        const body = ev.target.value;
+        const headers = new Headers();
+        headers.set('content-type', 'text/plain; charset=utf-8');
+        headers.set('accept', 'text/html');
+        const req = new Request('/render', {
+          method: 'POST',
+          body: body,
+          headers: headers, 
+        });
+        window.fetch(req).then(res => {
+          return res.text();
+        }).then(text => {
+          previewFrame.srcdoc = text;
+        });
+      });
+    </script>
+  </body>
+</html>

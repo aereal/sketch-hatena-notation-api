@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 ruby '2.3.3'
 
 gem 'escape_utils'
+gem 'sinatra'
+gem 'sinatra-contrib', require: nil
 
 group :test do
   gem 'awesome_print'
