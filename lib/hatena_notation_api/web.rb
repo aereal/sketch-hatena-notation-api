@@ -26,7 +26,7 @@ module HatenaNotationApi
       input = request.body.read + "\n"
 
       parser = HatenaNotationApi::Parser.new(
-        command_path: File.expand_path('./go-text-hatena'),
+        command_path: File.expand_path(ENV['TEXT_HATENA_COMMAND']),
       )
       result = parser.parse(input)
 
