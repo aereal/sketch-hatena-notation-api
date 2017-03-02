@@ -8,6 +8,7 @@ GEM
       thor (~> 0.19.1)
     minitest (5.10.1)
     multi_json (1.12.1)
+    puma (3.7.1)
     rack (1.6.5)
     rack-protection (1.5.3)
       rack
@@ -35,6 +36,7 @@ DEPENDENCIES
   escape_utils
   foreman
   minitest (>= 5.10.1)
+  puma
   sinatra
   sinatra-contrib
 

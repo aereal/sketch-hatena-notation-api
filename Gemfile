@@ -4,6 +4,7 @@ ruby '2.3.3'
 
 gem 'escape_utils'
 gem 'foreman'
+gem 'puma'
 gem 'sinatra'
 gem 'sinatra-contrib', require: nil
 
