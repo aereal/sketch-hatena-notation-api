@@ -3,6 +3,7 @@ require 'sinatra/respond_with'
 require 'json'
 
 require_relative './formatter/html'
+require_relative './parser'
 
 module HatenaNotationApi
   class Web < ::Sinatra::Base
@@ -22,24 +23,32 @@ module HatenaNotationApi
 
     post '/render', provides: ['json', 'html'] do
       request.body.rewind
-      hatena_notation = request.body.read.gsub(/\r\n/, "\n") + "\n"
+      input = request.body.read + "\n"
 
-      go_text_hatena = File.expand_path('./go-text-hatena')
-      ast = JSON.parse(
-        IO.popen([go_text_hatena], 'r+') {|io|
-          io.write(hatena_notation)
-          io.close_write
-          io.read
-        }
+      parser = HatenaNotationApi::Parser.new(
+        command_path: File.expand_path('./go-text-hatena'),
       )
+      result = parser.parse(input)
 
       respond_to do |format|
         format.on('application/json') do
-          JSON.generate(ast)
+          case result
+          when HatenaNotationApi::Parser::Result::Successful
+            JSON.generate(result.ast)
+          when HatenaNotationApi::Parser::Result::Failure
+            status 400
+            '{}'
+          end
         end
         format.on('text/html') do
-          formatter = HatenaNotationApi::Formatter::Html.new
-          formatter.format(ast)
+          case result
+          when HatenaNotationApi::Parser::Result::Successful
+            formatter = HatenaNotationApi::Formatter::Html.new
+            formatter.format(result.ast)
+          when HatenaNotationApi::Parser::Result::Failure
+            status 400
+            erb :error, locals: { result: result }
+          end
         end
       end
     end
